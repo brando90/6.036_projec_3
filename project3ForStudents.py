@@ -120,41 +120,62 @@ def Mstep(et, etw, etpw, etnw, t, tw, tpw, tnw):
 	# ptpw: p_{-1}(w|t)
 	# ptnw: p_{+1}(w|t)
 
-	T, W = etw.shape
+	T, W = etw.shape #tag set size and vocabulary size
 	pt = np.zeros(et.shape)
 	ptw = np.zeros(etw.shape)
 	ptpw = np.zeros(etpw.shape)
 	ptnw = np.zeros(etnw.shape)
+	# print "et.shape ", et.shape
+	# print "etw.shape", etw.shape
+	# print "etpw.shape", etpw.shape
+	# print "etnw.shape", etnw.shape
+
+	# print "t.shape ", t.shape
+	# print "tw.shape", tw.shape
+	# print "tpw.shape", tpw.shape
+	# print "tnw.shape", tnw.shape
 
 	# c is the weight of real count
 	c = 100.0
+
+	# T =  tag set size
+	# W = Vocabulary size
+	total_rt = sum([ c * t[i] for i in range(T)])
+	total_et = sum([ et[i] for i in range(T)])
+	total_tags = total_rt + total_et
+	for i in range(T):
+		r_t = t[i]
+		e_t = et[i]
+		pt[i] = (c * rt + e_t)/float(total_tags)
+	
+
 
 	# Estimate parameters pt, ptw, ptpw, ptnw based on the expected counts and real counts
 	# Your code here:
 
 	return pt, ptw, ptpw, ptnw
 
-def EstepA(pt, ptw, ptpw, ptnw, wordList):
-	T, W = ptw.shape
-	# Tables for expected counts
-	# et: expected counts for \theta(t)
-	# etw: expected counts for \theta_0(w|t)
-	# etpw: expected counts for \theta_{-1}(w|t)
-	# etnw: expected counts for \theta_{+1}(w|t)
-	et = np.zeros(T)
-	etw = np.zeros((T, W))
-	etpw = np.zeros((T, W))
-	etnw = np.zeros((T, W))
+# def EstepA(pt, ptw, ptpw, ptnw, wordList):
+# 	T, W = ptw.shape
+# 	# Tables for expected counts
+# 	# et: expected counts for \theta(t)
+# 	# etw: expected counts for \theta_0(w|t)
+# 	# etpw: expected counts for \theta_{-1}(w|t)
+# 	# etnw: expected counts for \theta_{+1}(w|t)
+# 	et = np.zeros(T)
+# 	etw = np.zeros((T, W))
+# 	etpw = np.zeros((T, W))
+# 	etnw = np.zeros((T, W))
 	
-	for sent in wordList:
-		for pos in range(len(sent)):
-			# Compute the posterior for each word
-			# Your code here:
+# 	for sent in wordList:
+# 		for pos in range(len(sent)):
+# 			# Compute the posterior for each word
+# 			# Your code here:
 
-			# Accumulate expected counts based on posterior
-			# Your code here:
+# 			# Accumulate expected counts based on posterior
+# 			# Your code here:
 
-	return et, etw, etpw, etnw
+# 	return et, etw, etpw, etnw
 
 def likelihoodA(pt, ptw, ptpw, ptnw, wordList, t, tw, tpw, tnw):
 	# compute likelihood based on Model A
@@ -403,7 +424,7 @@ def taskem(ratio):
 			pred = predictFunc[m](unlabelWordList, pt, ptw, ptpw, ptnw)
 			print 'Iter', iter + 1, 'Log-likelihood =', l, "Model accuracy:", evaluate(unlabelLabelList, pred)
 
-#task1()
+task1()
 #task2()
 #task3()
 
