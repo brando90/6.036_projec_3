@@ -138,17 +138,33 @@ def Mstep(et, etw, etpw, etnw, t, tw, tpw, tnw):
 	# c is the weight of real count
 	c = 100.0
 
+	print "(T , W) ", (T , W)
+
 	# T =  tag set size
 	# W = Vocabulary size
-	total_rt = sum([ c * t[i] for i in range(T)])
+	total_rt = sum([ t[i] for i in range(T)])
 	total_et = sum([ et[i] for i in range(T)])
-	total_tags = total_rt + total_et
+	total_tags = c * total_rt + total_et
 	for i in range(T):
-		r_t = t[i]
-		e_t = et[i]
-		pt[i] = (c * rt + e_t)/float(total_tags)
-	
+		pt[i] = (c * t[i] + et[i]) / float(total_tags)
 
+	total_r_tw = sum([ tw[i] for i in range(W)])
+	total_e_tw = sum([ etw[i] for i in range(W)])
+	total_tw = c * total_rt + total_e_tw
+	for i in range(W):
+		ptw[i] = (c * tw[i] + etw[i]) / float(total_tw)
+	
+	total_r_tpw = sum([ tpw[i] for i in range(W)])
+	total_e_tpw = sum([ etpw[i] for i in range(W)])
+	total_tpw = c * total_r_tpw + total_e_tpw
+	for i range(W):
+		ptpw[i] = (c * tpw[i] + etpw[i]) / total_tpw
+
+	total_r_tnw = sum([ tnw[i] for i in range(W)])
+	total_e_tnw = sum([ etnw[i] for i in range(W)])
+	total_tnw = c * total_r_tnw + total_e_tnw
+	for i range(W):
+		ptnw[i] = (c * tnw[i] + etnw[i]) / total_tnw
 
 	# Estimate parameters pt, ptw, ptpw, ptnw based on the expected counts and real counts
 	# Your code here:
