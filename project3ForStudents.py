@@ -121,77 +121,63 @@ def Mstep(et, etw, etpw, etnw, t, tw, tpw, tnw):
 	# ptnw: p_{+1}(w|t)
 
 	T, W = etw.shape #tag set size and vocabulary size
+	print  "et.shape", et.shape
 	pt = np.zeros(et.shape)
 	ptw = np.zeros(etw.shape)
 	ptpw = np.zeros(etpw.shape)
 	ptnw = np.zeros(etnw.shape)
-	# print "et.shape ", et.shape
-	# print "etw.shape", etw.shape
-	# print "etpw.shape", etpw.shape
-	# print "etnw.shape", etnw.shape
-
-	# print "t.shape ", t.shape
-	# print "tw.shape", tw.shape
-	# print "tpw.shape", tpw.shape
-	# print "tnw.shape", tnw.shape
 
 	# c is the weight of real count
 	c = 100.0
 
-	print "(T , W) ", (T , W)
-
+	# Estimate parameters pt, ptw, ptpw, ptnw based on the expected counts and real counts
+	# Your code here:
 	# T =  tag set size
 	# W = Vocabulary size
-	total_rt = sum([ t[i] for i in range(T)])
-	total_et = sum([ et[i] for i in range(T)])
+	total_rt = np.sum(t)
+	total_et = np.sum(et)
 	total_tags = c * total_rt + total_et
 	for i in range(T):
 		pt[i] = (c * t[i] + et[i]) / float(total_tags)
 
-	total_r_tw = sum([ tw[i] for i in range(W)])
-	total_e_tw = sum([ etw[i] for i in range(W)])
-	total_tw = c * total_rt + total_e_tw
-	for i in range(W):
-		ptw[i] = (c * tw[i] + etw[i]) / float(total_tw)
+	for tag in range(T):
+		total_tw = np.sum(c * tw[tag] + etw[tag])
+		for word in range(W):
+			ptw[tag][word] = (c * tw[tag][word] + etw[tag][word]) / total_tw
 	
-	total_r_tpw = sum([ tpw[i] for i in range(W)])
-	total_e_tpw = sum([ etpw[i] for i in range(W)])
-	total_tpw = c * total_r_tpw + total_e_tpw
-	for i range(W):
-		ptpw[i] = (c * tpw[i] + etpw[i]) / total_tpw
+	for tag in range(T):
+		total_tpw = np.sum(c * tpw[tag] + etpw[tag])
+		for word in range(W):
+			ptpw[tag][word] = (c * tpw[tag][word] + etw[tag][word]) / total_tpw
 
-	total_r_tnw = sum([ tnw[i] for i in range(W)])
-	total_e_tnw = sum([ etnw[i] for i in range(W)])
-	total_tnw = c * total_r_tnw + total_e_tnw
-	for i range(W):
-		ptnw[i] = (c * tnw[i] + etnw[i]) / total_tnw
-
-	# Estimate parameters pt, ptw, ptpw, ptnw based on the expected counts and real counts
-	# Your code here:
+	for tag in range(T):
+		total_tnw = np.sum(c * tnw[tag] + etnw[tag])
+		for word in range(W):
+			ptnw[tag][word] = (c * tnw[tag][word] + etnw[tag][word]) / total_tnw
 
 	return pt, ptw, ptpw, ptnw
 
-# def EstepA(pt, ptw, ptpw, ptnw, wordList):
-# 	T, W = ptw.shape
-# 	# Tables for expected counts
-# 	# et: expected counts for \theta(t)
-# 	# etw: expected counts for \theta_0(w|t)
-# 	# etpw: expected counts for \theta_{-1}(w|t)
-# 	# etnw: expected counts for \theta_{+1}(w|t)
-# 	et = np.zeros(T)
-# 	etw = np.zeros((T, W))
-# 	etpw = np.zeros((T, W))
-# 	etnw = np.zeros((T, W))
+def EstepA(pt, ptw, ptpw, ptnw, wordList):
+	T, W = ptw.shape
+	# Tables for expected counts
+	# et: expected counts for \theta(t)
+	# etw: expected counts for \theta_0(w|t)
+	# etpw: expected counts for \theta_{-1}(w|t)
+	# etnw: expected counts for \theta_{+1}(w|t)
+	et = np.zeros(T)
+	etw = np.zeros((T, W))
+	etpw = np.zeros((T, W))
+	etnw = np.zeros((T, W))
 	
-# 	for sent in wordList:
-# 		for pos in range(len(sent)):
-# 			# Compute the posterior for each word
-# 			# Your code here:
+	for sent in wordList:
+		for pos in range(len(sent)):
+			# Compute the posterior for each word
+			# Your code here:
 
-# 			# Accumulate expected counts based on posterior
-# 			# Your code here:
+			# Accumulate expected counts based on posterior
+			# Your code here:
 
-# 	return et, etw, etpw, etnw
+	return et, etw, etpw, etnw
 
 def likelihoodA(pt, ptw, ptpw, ptnw, wordList, t, tw, tpw, tnw):
 	# compute likelihood based on Model A
