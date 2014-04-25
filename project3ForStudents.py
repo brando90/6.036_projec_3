@@ -214,7 +214,7 @@ def EstepB(pt, ptw, ptpw, ptnw, wordList):
 					etw[tag][w] += posterior
 				else:
 					w = sent[pos]
-					w_p = sent[pos]
+					w_p = sent[pos - 1]
 					posterior = (pt[tag] * ptw[tag][w] * ptpw[tag][w_p]) / np.dot(pt, ptpw.T[w_p] * ptw.T[w])
 					et[tag] += posterior
 					etw[tag][w] += posterior
@@ -244,8 +244,6 @@ def EstepC(pt, ptw, ptpw, ptnw, wordList):
 	
 	for sent in wordList:
 		for pos in range(len(sent)):
-			posterior = None
-
 			# Compute the posterior for the first word, middle word or last owrd
 			# Hint: the posterior formula for the first word, the last word and others are different
 			# Your code here:
@@ -260,19 +258,19 @@ def EstepC(pt, ptw, ptpw, ptnw, wordList):
 				elif pos == (len(sent) - 1):
 					w_p = sent[pos - 1]
 					w = sent[pos]
+					posterior = (pt[tag] * ptw[tag][w] * ptpw[tag][w_p]) / np.dot(pt, ptw.T[w] * ptpw.T[w_p])
+					et[tag] += posterior
+					etw[tag][w] += posterior
+					etpw[tag][w_p] += posterior
+				else:
+					w_p = sent[pos - 1]
+					w = sent[pos]
 					w_n = sent[pos + 1]
 					posterior = (pt[tag] * ptpw[tag][w_p] * ptw[tag][w] * ptnw[tag][w_n]) / np.dot(pt, ptw.T[w] * ptpw.T[w_p] * ptnw.T[w_n])
 					et[tag] += posterior
 					etw[tag] += posterior
 					etpw[tag][w_p] += posterior
 					etnw[tag][w_n] += posterior
-				else:
-					w_p = sent[pos - 1]
-					w = sent[pos]
-					posterior = (pt[tag] * ptw[tag][w] * ptpw[tag][w_p]) / np.dot(pt, ptw.T[w] * ptpw.T[w_p])
-					et[tag] += posterior
-					etw[tag][w] += posterior
-					etpw[tag][w_p] += posterior
 
 			# Accumulate expected counts based on posterior
 			# Your code here:
@@ -312,11 +310,15 @@ def predictA(wordList, pt, ptw, ptpw, ptnw):
 		cur_pred = []
 		for pos in range(len(sent)):
 			# pred_tag is the prediction of tag for the current word
-			pred_tag = -1
-						
-			# Your code here:
-
-			# append the prediction to the list
+			w = sent[pos]
+			best_joint = -1
+			best_tag = -1
+			for tag in range(T):
+				joint = (pt[tag] * ptw[tag][w])
+				if joint > best_joint:
+					best_tag = tag
+					best_joint = joint
+			pred_tag = best_tag
 			cur_pred.append(pred_tag)
 		pred.append(cur_pred)
 
@@ -338,13 +340,31 @@ def predictB(wordList, pt, ptw, ptpw, ptnw):
 	for sent in wordList:
 		cur_pred = []
 		for pos in range(len(sent)):
-			# pred_tag is the prediction of tag for the current word
-			pred_tag = -1
-						
+			# pred_tag is the prediction of tag for the current word		
 			# Your code here:
 			# Hint: note that the probability definition is different for the first word and the rest
+			if pos == 0:
+				w = sent[pos]
+				best_joint = -1
+				best_tag = -1
+				for tag in range(T):
+					joint = (pt[tag] * ptw[tag][w])
+					if joint > best_joint:
+						best_tag = tag
+						best_joint = joint
+			else:
+				w = sent[pos]
+				w_p = sent[pos - 1]
+				best_joint = -1
+				best_tag = -1
+				for tag in range(T):
+					joint = (pt[tag] * ptw[tag][w] * ptpw[tag][w_p])
+					if joint > best_joint:
+						best_tag = tag
+						best_joint = joint
 
 			# append the prediction to the list
+			pred_tag = best_tag
 			cur_pred.append(pred_tag)
 		pred.append(cur_pred)
 
@@ -367,12 +387,42 @@ def predictC(wordList, pt, ptw, ptpw, ptnw):
 		pos = 0
 		for pos in range(len(sent)):
 			# pred_tag is the prediction of tag for the current word
-			pred_tag = -1
-						
 			# Your code here:
 			# Hint: note that the probability definition is different for the first word, the last word and the middle words
+			if pos == 0:
+				w = sent[pos]
+				w_n = sent[pos + 1]
+				best_joint = -1
+				best_tag = -1
+				for tag in range(T):
+					joint = (pt[tag] * ptw[tag][w] * ptnw[tag][w_n])
+					if joint > best_joint:
+						best_tag = tag
+						best_joint = joint
+			elif pos == (len(sent) - 1):
+				w_p = sent[pos - 1]
+				w = sent[pos]
+				best_joint = -1
+				best_tag = -1
+				for tag in range(T):
+					joint = (pt[tag] * ptw[tag][w] * ptpw[tag][w_p])
+					if joint > best_joint:
+						best_tag = tag
+						best_joint = joint
+			else:
+				w_p = sent[pos - 1]
+				w = sent[pos]
+				w_n = sent[pos + 1]
+				best_joint = -1
+				best_tag = -1
+				for tag in range(T):
+					joint = (pt[tag] * ptpw[tag][w_p] * ptw[tag][w] * ptnw[tag][w_n])
+					if joint > best_joint:
+						best_tag = tag
+						best_joint = joint
 
 			# append the prediction to the list
+			pred_tag = best_tag
 			cur_pred.append(pred_tag)
 		pred.append(cur_pred)
 
