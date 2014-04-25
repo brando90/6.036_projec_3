@@ -164,18 +164,20 @@ def EstepA(pt, ptw, ptpw, ptnw, wordList):
 	# etw: expected counts for \theta_0(w|t)
 	# etpw: expected counts for \theta_{-1}(w|t)
 	# etnw: expected counts for \theta_{+1}(w|t)
+	print "EstepA"
 	et = np.zeros(T)
 	etw = np.zeros((T, W))
 	etpw = np.zeros((T, W))
 	etnw = np.zeros((T, W))
+
 	
 	for sent in wordList:
 		for pos in range(len(sent)):
-			# Compute the posterior for each word
-			# Your code here:
-
-			# Accumulate expected counts based on posterior
-			# Your code here:
+			w = sent[pos]
+			for tag in range(T):
+				posterior = (pt[tag] * ptw[tag][w]) / np.dot(pt, ptw.T[w])
+				pt[tag] += posterior
+				ptw[tag][w] += posterior
 
 	return et, etw, etpw, etnw
 
@@ -201,10 +203,19 @@ def EstepB(pt, ptw, ptpw, ptnw, wordList):
 	
 	for sent in wordList:
 		for pos in range(len(sent)):
-			posterior = None
 			# Compute the posterior for the first word or other words
 			# Hint: the posterior formula for the first word and others are different
 			# Your code here:
+			w = sent[pos]
+			for tag in range(T):
+				if pos == 0:
+					posterior = (pt[tag] * ptw[tag][w]) / np.dot(pt, ptw.T[w])
+					pt[tag] += posterior
+					ptw[tag][w] += posterior
+				else:
+					posterior = (pt[tag] * ptw[tag][w] * ptpw[tag][w])
+					pt[tag] += posterior
+					ptw[tag][w] += posterior
 
 			# Accumulate expected counts based on posterior
 			# Your code here:
