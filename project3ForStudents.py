@@ -121,7 +121,6 @@ def Mstep(et, etw, etpw, etnw, t, tw, tpw, tnw):
 	# ptnw: p_{+1}(w|t)
 
 	T, W = etw.shape #tag set size and vocabulary size
-	print  "et.shape", et.shape
 	pt = np.zeros(et.shape)
 	ptw = np.zeros(etw.shape)
 	ptpw = np.zeros(etpw.shape)
@@ -460,17 +459,46 @@ def evaluate(labelList, pred):
 		acc += sum([1 if labelList[i][j] == pred[i][j] else 0 for j in range(len(labelList[i]))])
 	return acc / total
 
+def getHighestUnconditional(pt, ptw):
+	T, W = ptw.shape
+	highest_list = []
+	highest_prob = -1
+	for word in range(W):
+		for tag in range(T):
+			current_ptw = ptw[tag][word]
+			current_posterior = (pt[tag] * ptw[tag][word]) / np.dot(pt, ptw.T[word])
+			if current_posterior > highest_prob:
+				highest_list = [word]
+				highest_prob = current_posterior
+			elif current_posterior == highest_prob:
+				highest_list.append(word)
+	return highest_list, highest_prob
+
+def nums2word(word_nums, vocmap):
+	words = []
+	for i in range(len(word_nums)):
+		for key in vocmap:
+			if vocmap[key] == word_nums[i]:
+				words.append(key)
+	return words
+
 def task1():
 	# Hint: This function is fully implemented. Just call it and report your result
 
 	# Test each model given labeled data
 	# load the count from training corpus
 	wordList, labelList, vocmap, tagmap = loadTrainData()
+	print tagmap
+	#print vocmap
 	t, tw, tpw, tnw, unlabelWordList, unlabelLabelList = splitDataAndGetCounts(1.0, wordList, labelList, vocmap, tagmap)
 	# estimate the parameters
 	pt, ptw, ptpw, ptnw = Mstep(np.zeros(t.shape), np.zeros(tw.shape), np.zeros(tpw.shape), np.zeros(tnw.shape), t, tw, tpw, tnw)
 	# load the testing data
 	wordList, labelList = loadTestData(vocmap, tagmap)
+
+	highest, highest_prob = getHighestUnconditional(pt , ptw)
+	words = nums2word(highest, vocmap)
+	print highest_prob, words
 
 	# predict using each model and evaluate
 	pred = predictA(wordList, pt, ptw, ptpw, ptnw)
@@ -527,10 +555,10 @@ def taskem(ratio):
 			pred = predictFunc[m](unlabelWordList, pt, ptw, ptpw, ptnw)
 			print 'Iter', iter + 1, 'Log-likelihood =', l, "Model accuracy:", evaluate(unlabelLabelList, pred)
 
-#print "task 1: "
-#task1()
+print "task 1: "
+task1()
 #print "\ntask 2: "
 #task2()
-print "\ntask 3: "
-task3()
+# print "\ntask 3: "
+# task3()
 
