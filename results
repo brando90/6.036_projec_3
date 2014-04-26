@@ -1,0 +1,57 @@
+task 1: 
+Vocabulary size: 11693
+Tagset size: 45
+Model A accuracy: 0.896947665594
+Model B accuracy: 0.919608706211
+Model C accuracy: 0.925171513569
+
+task 2: 
+Vocabulary size: 11693
+Tagset size: 45
+0.5 labeled, 0.5 unlabeled:
+
+Use model A:
+
+Model accuracy on labeled data: 0.894971851418
+Iter 1 Log-likelihood = -319931653.361 Model accuracy: 0.900206733478
+Iter 2 Log-likelihood = -319524639.904 Model accuracy: 0.895690538616
+Iter 3 Log-likelihood = -319520418.026 Model accuracy: 0.895355594891
+Iter 4 Log-likelihood = -319520370.223 Model accuracy: 0.894987378611
+
+Use model B:
+
+Model accuracy on labeled data: 0.911477257099
+Iter 1 Log-likelihood = -569801796.468 Model accuracy: 0.912728305185
+Iter 2 Log-likelihood = -569511749.547 Model accuracy: 0.887623053001
+Iter 3 Log-likelihood = -569504808.167 Model accuracy: 0.876266020735
+Iter 4 Log-likelihood = -569502269.51 Model accuracy: 0.874318467156
+Use model C:
+Model accuracy on labeled data: 0.913464737746
+Iter 1 Log-likelihood = -903049276.654 Model accuracy: 0.682196077388
+Iter 2 Log-likelihood = -904959264.556 Model accuracy: 0.681654843819
+Iter 3 Log-likelihood = -903992586.96 Model accuracy: 0.677739773126
+Iter 4 Log-likelihood = -903486198.233 Model accuracy: 0.675705710901
+
+task 3: 
+Vocabulary size: 11693
+Tagset size: 45
+0.01 labeled, 0.99 unlabeled:
+Use model A:
+Model accuracy on labeled data: 0.701425289901
+Iter 1 Log-likelihood = -12349648.2363 Model accuracy: 0.754789250823
+Iter 2 Log-likelihood = -12073983.0009 Model accuracy: 0.754787036781
+Iter 3 Log-likelihood = -11975392.0625 Model accuracy: 0.754618769546
+Iter 4 Log-likelihood = -11932227.8478 Model accuracy: 0.754499211247
+Use model B:
+Model accuracy on labeled data: 0.720318822129
+Iter 1 Log-likelihood = -22272818.6679 Model accuracy: 0.713570420391
+Iter 2 Log-likelihood = -22124790.7774 Model accuracy: 0.709122408878
+Iter 3 Log-likelihood = -22098891.6184 Model accuracy: 0.656908643069
+Iter 4 Log-likelihood = -22083398.915 Model accuracy: 0.601069382559
+Use model C:
+Model accuracy on labeled data: 0.661033404367
+Iter 1 Log-likelihood = -31071325.4543 Model accuracy: 0.291666897296
+Iter 2 Log-likelihood = -31002824.6395 Model accuracy: 0.280260150001
+Iter 3 Log-likelihood = -30940787.2599 Model accuracy: 0.275229845294
+Iter 4 Log-likelihood = -30902468.5594 Model accuracy: 0.269640494839
+
