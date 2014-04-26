@@ -164,13 +164,11 @@ def EstepA(pt, ptw, ptpw, ptnw, wordList):
 	# etw: expected counts for \theta_0(w|t)
 	# etpw: expected counts for \theta_{-1}(w|t)
 	# etnw: expected counts for \theta_{+1}(w|t)
-	print "EstepA"
 	et = np.zeros(T)
 	etw = np.zeros((T, W))
 	etpw = np.zeros((T, W))
 	etnw = np.zeros((T, W))
 
-	
 	for sent in wordList:
 		for pos in range(len(sent)):
 			w = sent[pos]
@@ -247,30 +245,37 @@ def EstepC(pt, ptw, ptpw, ptnw, wordList):
 			# Compute the posterior for the first word, middle word or last owrd
 			# Hint: the posterior formula for the first word, the last word and others are different
 			# Your code here:
-			for tag in range(T):
-				if pos == 0:
-					w = sent[pos]
-					w_n = sent[pos + 1]
-					posterior = (pt[tag] * ptw[tag][w] * ptnw[tag][w_n]) / np.dot(pt, ptw.T[w] * ptnw.T[w_n])
+			if len(sent) == 1:
+				w = sent[pos]
+				for tag in range(T):
+					posterior = (pt[tag] * ptw[tag][w]) / np.dot(pt, ptw.T[w] * ptnw.T[w_n])
 					et[tag] += posterior
 					etw[tag][w] += posterior
-					etpw[tag][w_n] += posterior
-				elif pos == (len(sent) - 1):
-					w_p = sent[pos - 1]
-					w = sent[pos]
-					posterior = (pt[tag] * ptw[tag][w] * ptpw[tag][w_p]) / np.dot(pt, ptw.T[w] * ptpw.T[w_p])
-					et[tag] += posterior
-					etw[tag][w] += posterior
-					etpw[tag][w_p] += posterior
-				else:
-					w_p = sent[pos - 1]
-					w = sent[pos]
-					w_n = sent[pos + 1]
-					posterior = (pt[tag] * ptpw[tag][w_p] * ptw[tag][w] * ptnw[tag][w_n]) / np.dot(pt, ptw.T[w] * ptpw.T[w_p] * ptnw.T[w_n])
-					et[tag] += posterior
-					etw[tag] += posterior
-					etpw[tag][w_p] += posterior
-					etnw[tag][w_n] += posterior
+			else:
+				for tag in range(T):
+					if pos == 0:
+						w = sent[pos]
+						w_n = sent[pos + 1]
+						posterior = (pt[tag] * ptw[tag][w] * ptnw[tag][w_n]) / np.dot(pt, ptw.T[w] * ptnw.T[w_n])
+						et[tag] += posterior
+						etw[tag][w] += posterior
+						etpw[tag][w_n] += posterior
+					elif pos == (len(sent) - 1):
+						w_p = sent[pos - 1]
+						w = sent[pos]
+						posterior = (pt[tag] * ptw[tag][w] * ptpw[tag][w_p]) / np.dot(pt, ptw.T[w] * ptpw.T[w_p])
+						et[tag] += posterior
+						etw[tag][w] += posterior
+						etpw[tag][w_p] += posterior
+					else:
+						w_p = sent[pos - 1]
+						w = sent[pos]
+						w_n = sent[pos + 1]
+						posterior = (pt[tag] * ptpw[tag][w_p] * ptw[tag][w] * ptnw[tag][w_n]) / np.dot(pt, ptw.T[w] * ptpw.T[w_p] * ptnw.T[w_n])
+						et[tag] += posterior
+						etw[tag] += posterior
+						etpw[tag][w_p] += posterior
+						etnw[tag][w_n] += posterior
 
 			# Accumulate expected counts based on posterior
 			# Your code here:
@@ -522,7 +527,10 @@ def taskem(ratio):
 			pred = predictFunc[m](unlabelWordList, pt, ptw, ptpw, ptnw)
 			print 'Iter', iter + 1, 'Log-likelihood =', l, "Model accuracy:", evaluate(unlabelLabelList, pred)
 
-task1()
+#print "task 1: "
+#task1()
+#print "\ntask 2: "
 #task2()
-#task3()
+print "\ntask 3: "
+task3()
 
