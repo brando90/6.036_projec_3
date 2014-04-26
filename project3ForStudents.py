@@ -303,6 +303,7 @@ def predictA(wordList, pt, ptw, ptpw, ptnw):
 	
 	# pred is the list of prediction, each element is a list of tag index predictions for each word in the sentence
 	# e.g. pred = [[1,2], [2,3]]
+	T, W = ptw.shape
 	pred = []
 
 	# Predict tag index in each sentence based on Model A
@@ -334,6 +335,7 @@ def predictB(wordList, pt, ptw, ptpw, ptnw):
 
 	# pred is the list of prediction, each element is a list of tag index predictions for each word in the sentence
 	# e.g. pred = [[1,2], [2,3]]
+	T, W = ptw.shape
 	pred = []
 
 	# Predict tag index in each sentence based on Model B
@@ -379,17 +381,26 @@ def predictC(wordList, pt, ptw, ptpw, ptnw):
 
 	# pred is the list of prediction, each element is a list of tag index predictions for each word in the sentence
 	# e.g. pred = [[1,2], [2,3]]
+	T, W = ptw.shape
 	pred = []
 
 	# Predict tag index in each sentence based on Model C
 	for sent in wordList:
 		cur_pred = []
-		pos = 0
 		for pos in range(len(sent)):
 			# pred_tag is the prediction of tag for the current word
 			# Your code here:
 			# Hint: note that the probability definition is different for the first word, the last word and the middle words
-			if pos == 0:
+			if len(sent) == 1:
+				w = sent[pos]
+				best_joint = -1
+				best_tag = -1
+				for tag in range(T):
+					joint = (pt[tag] * ptw[tag][w])
+					if joint > best_joint:
+						best_tag = tag
+						best_joint = joint
+			elif pos == 0:
 				w = sent[pos]
 				w_n = sent[pos + 1]
 				best_joint = -1
