@@ -474,6 +474,48 @@ def getHighestUnconditional(pt, ptw):
 				highest_list.append(word)
 	return highest_list, highest_prob
 
+def getLeastInfoWord(pt, ptw, vocmap):
+	T, W = ptw.shape
+	highest_list = []
+	highest_prob = -1
+	h_t = np.dot(pt, np.log2(np.reciprocal(pt)) )
+	best_diff = float("inf")
+	best_word = None
+	for word in range(W):
+		h_tw = 0
+		for tag in range(T):
+			current_ptw = ptw[tag][word]
+			current_posterior = (pt[tag] * ptw[tag][word]) / np.dot(pt, ptw.T[word])
+			x = -1 * math.log(current_posterior, 2)
+			h_tw += current_posterior * x
+		diff = math.pow( h_tw - h_t, 2)
+		if best_diff > diff:
+			print nums2word([word], vocmap)
+			best_word = word
+			best_diff = diff
+	return [best_word]
+
+def getMostInfoWord(pt, ptw, vocmap):
+	T, W = ptw.shape
+	highest_list = []
+	highest_prob = -1
+	h_t = np.dot(pt, np.log2(np.reciprocal(pt)) )
+	best_diff = float("-inf")
+	best_word = 1
+	for word in range(W):
+		h_tw = 0
+		for tag in range(T):
+			current_ptw = ptw[tag][word]
+			current_posterior = (pt[tag] * ptw[tag][word]) / np.dot(pt, ptw.T[word])
+			x = -1 * math.log(current_posterior, 2)
+			h_tw += current_posterior * x
+		diff = math.pow( h_tw - h_t, 2)
+		if best_diff < diff:
+			print nums2word([word], vocmap)
+			best_word = word
+			best_diff = diff
+	return [best_word]
+
 def nums2word(word_nums, vocmap):
 	words = []
 	for i in range(len(word_nums)):
@@ -488,7 +530,7 @@ def task1():
 	# Test each model given labeled data
 	# load the count from training corpus
 	wordList, labelList, vocmap, tagmap = loadTrainData()
-	print tagmap
+	#print tagmap
 	#print vocmap
 	t, tw, tpw, tnw, unlabelWordList, unlabelLabelList = splitDataAndGetCounts(1.0, wordList, labelList, vocmap, tagmap)
 	# estimate the parameters
@@ -496,9 +538,14 @@ def task1():
 	# load the testing data
 	wordList, labelList = loadTestData(vocmap, tagmap)
 
-	highest, highest_prob = getHighestUnconditional(pt , ptw)
-	words = nums2word(highest, vocmap)
-	print highest_prob, words
+	#highest, highest_prob = getHighestUnconditional(pt , ptw)
+	#words = nums2word(highest, vocmap)
+	#best_word = getLeastInfoWord(pt, ptw, vocmap)
+	best_word = getMostInfoWord(pt, ptw, vocmap)
+	words = nums2word(best_word, vocmap)
+	print "answer"
+	print words
+	#print highest_prob, words
 
 	# predict using each model and evaluate
 	pred = predictA(wordList, pt, ptw, ptpw, ptnw)
@@ -559,6 +606,6 @@ print "task 1: "
 task1()
 #print "\ntask 2: "
 #task2()
-# print "\ntask 3: "
-# task3()
+#print "\ntask 3: "
+#task3()
 
